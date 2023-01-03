@@ -27,6 +27,6 @@ export default async function handler(req, context) {
   if (!site) {
     return context.rewrite("/404.html");
   } else {
-    return context.json(site);
+    return await fetch(site.url);
   }
 }
