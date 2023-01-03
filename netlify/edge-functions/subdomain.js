@@ -15,18 +15,17 @@ async function getSiteFromSubdomain(subdomain) {
 }
 
 export default async function handler(req, context) {
-  const host = new URL(req.url).host;
-  const subdomain = host.split(".")[0];
+  const reqUrl = new URL(req.url);
+  const reqHost = reqUrl.host;
+  const subdomain = reqHost.split(".")[0];
   if (subdomain === "www" || subdomain === "localhost:8888") {
     return;
   }
-
-  console.log("subdomain", subdomain);
   const site = await getSiteFromSubdomain(subdomain);
-  console.log("site", site);
   if (!site) {
     return context.rewrite("/404.html");
   } else {
-    return await fetch(site.url);
+    const url = site.url + reqUrl.pathname;
+    return await fetch(url);
   }
 }
