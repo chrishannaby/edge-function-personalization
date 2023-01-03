@@ -1,5 +1,5 @@
 import { connect } from "https://unpkg.com/@planetscale/database@1.5.0/dist/index.js";
-import { HTMLRewriter } from "https://ghuc.cc/worker-tools/html-rewriter/index.ts";
+import { HTMLRewriter } from "https://raw.githubusercontent.com/worker-tools/html-rewriter/master/index.ts";
 
 const config = {
   host: Deno.env.get("DATABASE_HOST"),

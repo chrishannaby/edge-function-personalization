@@ -1,0 +1,9 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const { slug } = Astro.params;
+---
+
+<Layout title={`${slug} | Edge Function Personalization`}>
+  <h1>{slug}</h1>
+</Layout>

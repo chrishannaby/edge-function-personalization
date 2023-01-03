@@ -1,3 +1,7 @@
 [[edge_functions]]
 path = "/*"
 function = "subdomain"
+
+[[edge_functions]]
+path = "/api/add-site"
+function = "add-site"
