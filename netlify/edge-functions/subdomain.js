@@ -8,18 +8,10 @@ const config = {
 };
 
 async function getSiteFromSubdomain(db, subdomain) {
-  const sitesData = await db.execute("SELECT * FROM sites WHERE name = ?", [
+  const sitesData = await db.execute("SELECT * FROM sites WHERE slug = ?", [
     subdomain,
   ]);
   return sitesData.rows[0];
-}
-
-async function getExperimentsForSite(db, siteId) {
-  const experimentsData = await db.execute(
-    "SELECT * FROM experiments WHERE site_id = ?",
-    [siteId]
-  );
-  return experimentsData.rows;
 }
 
 export default async function handler(req, context) {
@@ -34,23 +26,17 @@ export default async function handler(req, context) {
   if (!site) {
     return context.rewrite("/404.html");
   } else {
-    const url = site.url + reqUrl.pathname;
+    const url = site.origin + reqUrl.pathname;
     const response = await fetch(url);
-    if (response.headers.get("content-type").includes("text/html")) {
-      const experiements = await getExperimentsForSite(db, site.id);
-      if (experiements.length > 0) {
-        const experiment = experiements[0];
-        const transformedResponse = new HTMLRewriter()
-          .on(experiment.selector, {
-            element(element) {
-              element.setInnerContent(experiment.replacement_text);
-            },
-          })
-          .transform(response);
-        return transformedResponse;
-      } else {
-        return response;
-      }
+    if (reqUrl.pathname === site.start_path) {
+      const transformedResponse = new HTMLRewriter()
+        .on(site.selector, {
+          element(element) {
+            element.setInnerContent(site.replacement_text);
+          },
+        })
+        .transform(response);
+      return transformedResponse;
     } else {
       return response;
     }
